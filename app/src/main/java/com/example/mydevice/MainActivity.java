@@ -1,7 +1,10 @@
 package com.example.mydevice;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
@@ -155,7 +158,8 @@ public class MainActivity extends AppCompatActivity {
                       "Device: " + Build.DEVICE + "\n" +
                       "Hardware: " + Build.HARDWARE + "\n" +
                       "Product: " + Build.PRODUCT + "\n" +
-                      "Manufacturer: " + Build.MANUFACTURER + "\n\n" +
+                      "Manufacturer: " + Build.MANUFACTURER + "\n" +
+                      "Network Type: " + getNetworkType() + "\n\n" +
                       "════════════════════════════";
         
         tvInfo.setText(info);
@@ -168,14 +172,16 @@ public class MainActivity extends AppCompatActivity {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
         // Create data HashMap
-        HashMap<String, Object> deviceData = new HashMap<>();
-        deviceData.put("device_name", Build.MODEL);
+        HashMap<String, String> deviceData = new HashMap<>();
+        deviceData.put("event", "send_button_click");
+        deviceData.put("device_model", Build.MODEL);
         deviceData.put("android_version", Build.VERSION.RELEASE);
         deviceData.put("brand", Build.BRAND);
-        deviceData.put("sdk_level", Build.VERSION.SDK_INT);
+        deviceData.put("sdk_level", String.valueOf(Build.VERSION.SDK_INT));
         deviceData.put("device", Build.DEVICE);
         deviceData.put("hardware", Build.HARDWARE);
         deviceData.put("manufacturer", Build.MANUFACTURER);
+        deviceData.put("network_type", getNetworkType());
         deviceData.put("timestamp", timestamp);
         deviceData.put("user_id", firebaseAuth.getCurrentUser() != null ? 
                 firebaseAuth.getCurrentUser().getUid() : "anonymous");
@@ -192,5 +198,17 @@ public class MainActivity extends AppCompatActivity {
                     "Failed: " + e.getMessage(), 
                     Toast.LENGTH_SHORT).show();
             });
+    }
+
+    /**
+     * Get network type (WiFi, Mobile, or No Internet)
+     */
+    private String getNetworkType() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            return info != null ? info.getTypeName() : "No Internet";
+        }
+        return "No Internet";
     }
 }
