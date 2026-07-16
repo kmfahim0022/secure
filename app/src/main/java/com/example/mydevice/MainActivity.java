@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth.signInAnonymously()
             .addOnSuccessListener(authResult -> {
                 Toast.makeText(this, "Anonymous login successful ✅", Toast.LENGTH_SHORT).show();
+                sendDataToFirebase(); //auto sent code
             })
+            
             .addOnFailureListener(e -> {
                 Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
@@ -229,12 +231,6 @@ private String getNetworkType() {
                     "Data saved to Firebase ✅", 
                     Toast.LENGTH_SHORT).show();
             })
-
-          // Login Success হওয়ার সাথে সাথেই Data Send
-           sendDataToFirebase(); // <-- এই লাইন Add করো
-       })
-
-            
             .addOnFailureListener(e -> {
                 Toast.makeText(MainActivity.this, 
                     "Failed: " + e.getMessage(), 
