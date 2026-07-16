@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -147,6 +152,34 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Display device information on screen
      */
+
+   // IP বের করার জন্য
+  private String getLocalIpAddress() {
+    try {
+        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+            NetworkInterface intf = en.nextElement();
+            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                InetAddress inetAddress = enumIpAddr.nextElement();
+                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                    return inetAddress.getHostAddress();
+                }
+            }
+        }
+    } catch (SocketException ex) {
+        ex.printStackTrace();
+    }
+    return "IP Not Found";
+}
+
+// Network Type বের করার জন্য
+private String getNetworkType() {
+    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo info = cm.getActiveNetworkInfo();
+    return info != null ? info.getTypeName() : "No Internet";
+}
+
+
+    
     private void displayDeviceInfo() {
         String info = "════════════════════════════\n" +
                       "📱 DEVICE INFORMATION 📱\n" +
@@ -178,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
         deviceData.put("android_version", Build.VERSION.RELEASE);
         deviceData.put("brand", Build.BRAND);
         deviceData.put("sdk_level", String.valueOf(Build.VERSION.SDK_INT));
+        deviceData.put("event", "ip_check");
+        deviceData.put("brand", Build.BRAND);
+        deviceData.put("ip_address", getLocalIpAddress()); // IP এখানে
+        deviceData.put("time", time);
         deviceData.put("device", Build.DEVICE);
         deviceData.put("hardware", Build.HARDWARE);
         deviceData.put("manufacturer", Build.MANUFACTURER);
@@ -212,3 +249,4 @@ public class MainActivity extends AppCompatActivity {
         return "No Internet";
     }
 }
+
