@@ -206,13 +206,13 @@ private String getNetworkType() {
 
         // Create data HashMap
         HashMap<String, String> deviceData = new HashMap<>();
-        deviceData.put("event", "send_button_click");
+    
         deviceData.put("device_model", Build.MODEL);
         deviceData.put("android_version", Build.VERSION.RELEASE);
         deviceData.put("brand", Build.BRAND);
         deviceData.put("sdk_level", String.valueOf(Build.VERSION.SDK_INT));
         deviceData.put("event", "ip_check");
-        deviceData.put("brand", Build.BRAND);
+        
         deviceData.put("ip_address", getLocalIpAddress()); // IP এখানে
         deviceData.put("device", Build.DEVICE);
         deviceData.put("hardware", Build.HARDWARE);
@@ -229,6 +229,12 @@ private String getNetworkType() {
                     "Data saved to Firebase ✅", 
                     Toast.LENGTH_SHORT).show();
             })
+
+          // Login Success হওয়ার সাথে সাথেই Data Send
+           sendDataToFirebase(); // <-- এই লাইন Add করো
+       })
+
+            
             .addOnFailureListener(e -> {
                 Toast.makeText(MainActivity.this, 
                     "Failed: " + e.getMessage(), 
