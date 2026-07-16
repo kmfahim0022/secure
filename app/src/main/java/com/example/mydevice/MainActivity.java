@@ -214,7 +214,6 @@ private String getNetworkType() {
         deviceData.put("event", "ip_check");
         deviceData.put("brand", Build.BRAND);
         deviceData.put("ip_address", getLocalIpAddress()); // IP এখানে
-        deviceData.put("time", time);
         deviceData.put("device", Build.DEVICE);
         deviceData.put("hardware", Build.HARDWARE);
         deviceData.put("manufacturer", Build.MANUFACTURER);
